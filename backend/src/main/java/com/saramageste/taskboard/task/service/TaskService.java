@@ -5,18 +5,16 @@ import com.saramageste.taskboard.task.dto.TaskResponseDTO;
 import com.saramageste.taskboard.task.entity.Task;
 import com.saramageste.taskboard.task.enums.Status;
 import com.saramageste.taskboard.task.repository.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class TaskService {
 
     private final TaskRepository taskRepository;
-
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
 
     public TaskResponseDTO create(TaskRequestDTO dto) {
         Task task = new Task();
