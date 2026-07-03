@@ -1,5 +1,7 @@
 package com.saramageste.taskboard.task.service;
 
+import com.saramageste.taskboard.task.dto.TaskRequestDTO;
+import com.saramageste.taskboard.task.dto.TaskResponseDTO;
 import com.saramageste.taskboard.task.entity.Task;
 import com.saramageste.taskboard.task.enums.Status;
 import com.saramageste.taskboard.task.repository.TaskRepository;
@@ -16,8 +18,29 @@ public class TaskService {
         this.taskRepository = taskRepository;
     }
 
-    public Task create(Task task) {
-        return taskRepository.save(task);
+    public TaskResponseDTO create(TaskRequestDTO dto) {
+        Task task = new Task();
+        task.setTitle(dto.getTitle());
+        task.setDescription(dto.getDescription());
+        task.setAssignee(dto.getAssignee());
+        task.setPriority(dto.getPriority());
+        task.setStatus(dto.getStatus());
+
+        Task saved = taskRepository.save(task);
+        return toResponse(saved);
+    }
+
+    private TaskResponseDTO toResponse(Task task) {
+        TaskResponseDTO dto = new TaskResponseDTO();
+
+        dto.setId(task.getId());
+        dto.setTitle(task.getTitle());
+        dto.setDescription(task.getDescription());
+        dto.setAssignee(task.getAssignee());
+        dto.setPriority(task.getPriority());
+        dto.setStatus(task.getStatus());
+
+        return dto;
     }
 
     public List<Task> findAll() {
