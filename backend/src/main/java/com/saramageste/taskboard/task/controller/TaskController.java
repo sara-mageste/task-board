@@ -1,5 +1,7 @@
 package com.saramageste.taskboard.task.controller;
 
+import com.saramageste.taskboard.task.dto.TaskRequestDTO;
+import com.saramageste.taskboard.task.dto.TaskResponseDTO;
 import com.saramageste.taskboard.task.entity.Task;
 import com.saramageste.taskboard.task.enums.Status;
 import com.saramageste.taskboard.task.service.TaskService;
@@ -20,8 +22,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> create(@RequestBody Task task) {
-        return ResponseEntity.ok(taskService.create(task));
+    public ResponseEntity<TaskResponseDTO> create(@RequestBody TaskRequestDTO dto) {
+        return ResponseEntity.ok(taskService.create(dto));
     }
 
     @GetMapping
