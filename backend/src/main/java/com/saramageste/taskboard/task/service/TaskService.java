@@ -4,6 +4,7 @@ import com.saramageste.taskboard.task.dto.TaskRequestDTO;
 import com.saramageste.taskboard.task.dto.TaskResponseDTO;
 import com.saramageste.taskboard.task.entity.Task;
 import com.saramageste.taskboard.task.enums.Status;
+import com.saramageste.taskboard.task.exception.ResourceNotFoundException;
 import com.saramageste.taskboard.task.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class TaskService {
 
     public Task findById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
     }
 
     public Task update(Long id, Task updatedTask) {
@@ -78,7 +79,7 @@ public class TaskService {
     }
 
     public List<Task> searchByTitle(String title) {
-        return taskRepository.findByTitleContainingIgnoreCase(title);
+        return taskRepository.findByTitleStartingWithIgnoreCase(title);
     }
 
 }
