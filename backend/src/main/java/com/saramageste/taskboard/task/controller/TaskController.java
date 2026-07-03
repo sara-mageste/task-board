@@ -27,7 +27,13 @@ public class TaskController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Task>> findAll() {
+    public ResponseEntity<List<Task>> findAll(
+            @RequestParam(required = false) String title) {
+
+        if (title != null && !title.isBlank()) {
+            return ResponseEntity.ok(taskService.findByTitle(title));
+        }
+
         return ResponseEntity.ok(taskService.findAll());
     }
 

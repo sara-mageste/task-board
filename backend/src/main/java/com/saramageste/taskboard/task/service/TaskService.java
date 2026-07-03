@@ -51,6 +51,10 @@ public class TaskService {
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found with id: " + id));
     }
 
+    public List<Task> findByTitle(String title) {
+        return taskRepository.findByTitleStartingWithIgnoreCase(title);
+    }
+
     public Task update(Long id, Task updatedTask) {
         Task existing = findById(id);
 
