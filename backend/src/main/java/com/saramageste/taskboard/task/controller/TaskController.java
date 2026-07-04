@@ -5,6 +5,7 @@ import com.saramageste.taskboard.task.dto.TaskResponseDTO;
 import com.saramageste.taskboard.task.entity.Task;
 import com.saramageste.taskboard.task.enums.Status;
 import com.saramageste.taskboard.task.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskResponseDTO> create(@RequestBody TaskRequestDTO dto) {
+    public ResponseEntity<TaskResponseDTO> create(@Valid @RequestBody TaskRequestDTO dto) {
         return ResponseEntity.ok(taskService.create(dto));
     }
 
@@ -43,8 +44,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> update(@PathVariable Long id,
-                                       @RequestBody Task task) {
+    public ResponseEntity<Task> update(@PathVariable Long id, @RequestBody Task task) {
         return ResponseEntity.ok(taskService.update(id, task));
     }
 
@@ -55,8 +55,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Task> updateStatus(@PathVariable Long id,
-                                             @RequestParam Status status) {
+    public ResponseEntity<Task> updateStatus(@PathVariable Long id, @RequestParam Status status) {
         return ResponseEntity.ok(taskService.updateStatus(id, status));
     }
 
