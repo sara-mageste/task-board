@@ -5,4 +5,6 @@ export interface Task {
   assignee: string;
   priority: 'LOW' | 'MEDIUM' | 'HIGH';
   status: 'BACKLOG' | 'ON_HOLD' | 'IN_PROGRESS' | 'DONE';
+  createdAt?: string;
+  updatedAt?: string;
 }

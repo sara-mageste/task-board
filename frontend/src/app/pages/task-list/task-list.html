@@ -1,70 +1,76 @@
 <div class="task-board">
 
-    <!-- LEFT BACK -->
-    <aside class="sidebar left">
+    <header class="board-header">
 
-        <div class="sidebar-top">
+        <div #searchContainer class="search-container" [class.open]="isSearchOpen">
+            <button class="icon-btn" (click)="toggleSearch()">
+                <span class="material-symbols-rounded">search</span>
+            </button>
 
-            <div #searchContainer class="search-container" [class.open]="isSearchOpen">
-                <button class="action-icon" (click)="toggleSearch()">
-                    <span class="material-symbols-rounded">search</span>
-                </button>
+            <input
+            #searchInput
+            type="text"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="search($event)"
+            placeholder="Search tasks..."
+            />
+        </div>
 
-                <input
-                #searchInput
-                type="text"
-                [(ngModel)]="searchTerm"
-                (ngModelChange)="search($event)"
-                placeholder="Search tasks..."
-                />
+        <h1>Task Board</h1>
+
+        <button class="icon-btn add-btn" (click)="openCreateModal()">
+            <span class="material-symbols-rounded">add</span>
+        </button>
+
+    </header>
+
+    <section class="kanban">
+
+        <div class="column" *ngFor="let col of columns">
+
+            <div class="column-header" [ngClass]="col.colorClass">
+                <h2>{{ col.title }}</h2>
+            </div>
+
+            <div class="column-body">
+
+                <div class="task-card" *ngFor="let task of tasksByStatus(col.status)" (click)="openDetails(task)">
+
+                    <div class="card-top">
+
+                        <div class="card-text">
+                            <span class="card-id">#{{ task.id }}</span>
+                            <strong class="card-title">{{ task.title }}</strong>
+                            <p class="card-description">{{ task.description }}</p>
+                        </div>
+
+                        <span class="priority-dot" [ngClass]="task.priority.toLowerCase()"></span>
+                    </div>
+
+                    <div class="card-bottom">
+                        <span class="card-date">{{ task.assignee }}</span>
+
+                        <div class="card-nav">
+                            <button *ngIf="canGoBack(task.status)" class="nav-btn" (click)="$event.stopPropagation(); moveTask(task, -1)">
+                                <span class="material-symbols-rounded">chevron_left</span>
+                            </button>
+
+                            <button *ngIf="canGoForward(task.status)" class="nav-btn" (click)="$event.stopPropagation(); moveTask(task, 1)">
+                                <span class="material-symbols-rounded">chevron_right</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <p class="empty-hint" *ngIf="tasksByStatus(col.status).length === 0">
+                    No tasks
+                </p>
+
             </div>
         </div>
 
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="board-content">
-
-        <header class="board-header">
-        <h1>Task Board</h1>
-        </header>
-
-        <section class="kanban">
-
-            <div class="column">
-                <h2>BACKLOG</h2>
-                <div class="task-card" *ngFor="let task of backlogTasks()">
-                    {{ task.title }}
-                </div>
-            </div>
-
-            <div class="column">
-                <h2>ON HOLD</h2>
-                <div class="task-card" *ngFor="let task of onHoldTasks()">
-                    {{ task.title }}
-                </div>
-            </div>
-
-            <div class="column">
-                <h2>IN PROGRESS</h2>
-                <div class="task-card" *ngFor="let task of inProgressTasks()">
-                    {{ task.id }}
-                    {{ task.title }}
-                    {{ task.description }}
-                    {{ task.assignee }}
-                </div>
-            </div>
-
-            <div class="column">
-                <h2>DONE</h2>
-                <div class="task-card" *ngFor="let task of doneTasks()">
-                    {{ task.title }}
-                </div>
-            </div>
-
-        </section>
-
-    </main>
-
+    </section>
 
 </div>

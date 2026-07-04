@@ -25,4 +25,24 @@ export class TaskService {
   getById(id: number): Observable<Task> {
     return this.http.get<Task>(`${this.apiUrl}/${id}`);
   }
+
+  create(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Observable<Task> {
+    return this.http.post<Task>(this.apiUrl, task);
+  }
+
+  update(id: number, task: Task): Observable<Task> {
+    return this.http.put<Task>(`${this.apiUrl}/${id}`, task);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  updateStatus(id: number, status: Task['status']): Observable<Task> {
+    return this.http.patch<Task>(
+      `${this.apiUrl}/${id}/status?status=${status}`,
+      {}
+    );
+  }
+
 }
