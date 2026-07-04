@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 
 import { Task } from '../../models/task.model';
 
-// Tipo do payload emitido pro pai - tarefa sem id (ainda não existe no banco)
 export type NewTaskPayload = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
 
 @Component({
@@ -24,7 +23,6 @@ export class CreateTask {
   priorities: Task['priority'][] = ['LOW', 'MEDIUM', 'HIGH'];
   statuses: Task['status'][] = ['BACKLOG', 'ON_HOLD', 'IN_PROGRESS', 'DONE'];
 
-  // Estado de abertura dos dropdowns customizados (substituem o <select> nativo)
   isPriorityOpen = signal(false);
   isStatusOpen = signal(false);
 
@@ -36,13 +34,12 @@ export class CreateTask {
     status: ['', [Validators.required]],
   });
 
-  // Facilita checar erro no template: só mostra se o campo foi tocado E é inválido
   hasError(controlName: string): boolean {
     const control = this.form.get(controlName);
     return !!control && control.invalid && control.touched;
   }
 
-  // ----- Custom select: PRIORITY -----
+  // Custom select: PRIORITY AND STATUS
 
   togglePriorityDropdown(event: Event): void {
     event.stopPropagation();
@@ -56,8 +53,6 @@ export class CreateTask {
     this.isPriorityOpen.set(false);
   }
 
-  // ----- Custom select: STATUS -----
-
   toggleStatusDropdown(event: Event): void {
     event.stopPropagation();
     this.isPriorityOpen.set(false);
@@ -70,7 +65,6 @@ export class CreateTask {
     this.isStatusOpen.set(false);
   }
 
-  // Fecha qualquer dropdown aberto ao clicar em outra parte do card
   closeDropdowns(): void {
     this.isPriorityOpen.set(false);
     this.isStatusOpen.set(false);
@@ -78,8 +72,6 @@ export class CreateTask {
 
   onSave(): void {
     if (this.form.invalid) {
-      // marca todos os campos como touched pra mostrar os erros de uma vez
-      // caso a pessoa clique em Salvar sem preencher nada
       this.form.markAllAsTouched();
       return;
     }
@@ -91,7 +83,6 @@ export class CreateTask {
     this.cancel.emit();
   }
 
-  // clique no overlay (fora do card) também cancela, exceto se for dentro do card
   onOverlayClick(event: MouseEvent): void {
     if (event.target === event.currentTarget) {
       this.onCancel();

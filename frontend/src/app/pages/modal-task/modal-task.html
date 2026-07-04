@@ -1,0 +1,142 @@
+<div class="overlay" (click)="onOverlayClick($event)">
+
+    <div class="modal-card" [formGroup]="form" (click)="closeDropdowns()">
+
+        <div class="modal-header">
+
+            <div class="header-id">
+                <label class="field-label">ID</label>
+                <input type="text" [value]="task.id" disabled />
+            </div>
+
+            <div class="header-actions">
+                <ng-container *ngIf="!isEditMode(); else editActions">
+                    <button class="icon-btn delete-btn" (click)="requestDelete(); $event.stopPropagation()">
+                        <span class="material-symbols-rounded">delete</span>
+                    </button>
+                    <button class="icon-btn edit-btn" (click)="enableEdit(); $event.stopPropagation()">
+                        <span class="material-symbols-rounded">edit</span>
+                    </button>
+                </ng-container>
+
+                <ng-template #editActions>
+                    <button class="icon-btn ok-btn" (click)="onSave(); $event.stopPropagation()">
+                        <span class="material-symbols-rounded">check</span>
+                    </button>
+                    <button class="icon-btn cancel-btn" (click)="cancelEdit(); $event.stopPropagation()">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </ng-template>
+            </div>
+
+        </div>
+
+        <label class="field-label">Responsible *</label>
+        <input
+          type="text"
+          formControlName="assignee"
+          maxlength="25"
+          [readonly]="!isEditMode()"
+          [class.disabled-field]="!isEditMode()"
+          [class.invalid]="hasError('assignee')"
+        />
+        <span class="error-msg" *ngIf="hasError('assignee')">Required field</span>
+
+        <label class="field-label">Title *</label>
+        <input
+          type="text"
+          formControlName="title"
+          maxlength="30"
+          [readonly]="!isEditMode()"
+          [class.disabled-field]="!isEditMode()"
+          [class.invalid]="hasError('title')"
+        />
+        <span class="error-msg" *ngIf="hasError('title')">Required field</span>
+
+        <label class="field-label">Description *</label>
+        <textarea
+          formControlName="description"
+          maxlength="100"
+          rows="3"
+          [readonly]="!isEditMode()"
+          [class.disabled-field]="!isEditMode()"
+          [class.invalid]="hasError('description')"
+        ></textarea>
+        <span class="error-msg" *ngIf="hasError('description')">Required field</span>
+
+        <div class="field-row">
+
+            <div class="field-col">
+                <label class="field-label">Priority *</label>
+
+                <div class="custom-select" [class.disabled]="!isEditMode()">
+                    <div
+                      class="selected"
+                      [class.disabled-field]="!isEditMode()"
+                      [class.invalid]="hasError('priority')"
+                      (click)="togglePriorityDropdown($event)"
+                    >
+                        <span class="selected-text">{{ form.get('priority')?.value || '' }}</span>
+                    </div>
+
+                    <div class="dropdown" *ngIf="isPriorityOpen()" (click)="$event.stopPropagation()">
+                        <div *ngFor="let p of priorities" (click)="selectPriority(p)">{{ p }}</div>
+                    </div>
+                </div>
+
+                <span class="error-msg" *ngIf="hasError('priority')">Required field</span>
+            </div>
+
+            <div class="field-col">
+                <label class="field-label">Status *</label>
+
+                <div class="custom-select" [class.disabled]="!isEditMode()">
+                    <div
+                      class="selected"
+                      [class.disabled-field]="!isEditMode()"
+                      [class.invalid]="hasError('status')"
+                      (click)="toggleStatusDropdown($event)"
+                    >
+                        <span class="selected-text">{{ (form.get('status')?.value)?.replace('_', ' ') || '' }}</span>
+                    </div>
+
+                    <div class="dropdown" *ngIf="isStatusOpen()" (click)="$event.stopPropagation()">
+                        <div *ngFor="let s of statuses" (click)="selectStatus(s)">{{ s.replace('_', ' ') }}</div>
+                    </div>
+                </div>
+
+                <span class="error-msg" *ngIf="hasError('status')">Required field</span>
+            </div>
+
+        </div>
+
+        <div class="field-row">
+
+            <div class="field-col">
+                <label class="field-label">Create at</label>
+                <input type="text" [value]="task.createdAt ? (task.createdAt | date:'dd/MM/yyyy') : '-'" disabled />
+            </div>
+
+            <div class="field-col">
+                <label class="field-label">Update at</label>
+                <input type="text" [value]="task.updatedAt ? (task.updatedAt | date:'dd/MM/yyyy') : '-'" disabled />
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Delete confirmation popup -->
+<div class="confirm-overlay" *ngIf="isConfirmDeleteOpen()">
+    <div class="confirm-card">
+        <p class="confirm-text">Are you sure you want to delete task #{{ task.id }}?</p>
+        <p class="confirm-subtext">This action cannot be undone.</p>
+
+        <div class="confirm-actions">
+            <button class="btn btn-cancel" (click)="cancelDelete()">Cancel</button>
+            <button class="btn btn-delete" (click)="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>

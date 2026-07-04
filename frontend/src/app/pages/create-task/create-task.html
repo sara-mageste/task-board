@@ -4,7 +4,7 @@
 
         <h2 class="modal-title">New Task</h2>
 
-        <!-- RESPONSÁVEL -->
+        <!-- REPONSIBLE -->
         <label class="field-label">Responsible *</label>
         <input
           type="text"
@@ -14,7 +14,7 @@
         />
         <span class="error-msg" *ngIf="hasError('assignee')">Required field</span>
 
-        <!-- TÍTULO -->
+        <!-- TITLE -->
         <label class="field-label">Title *</label>
         <input
           type="text"
@@ -24,7 +24,7 @@
         />
         <span class="error-msg" *ngIf="hasError('title')">Required field</span>
 
-        <!-- DESCRIÇÃO -->
+        <!-- DESCRIPTION -->
         <label class="field-label">Description *</label>
         <textarea
           formControlName="description"
@@ -34,7 +34,7 @@
         ></textarea>
         <span class="error-msg" *ngIf="hasError('description')">Required field</span>
 
-        <!-- PRIORIDADE + STATUS -->
+        <!-- PRIORITY + STATUS -->
         <div class="field-row">
 
             <div class="field-col">

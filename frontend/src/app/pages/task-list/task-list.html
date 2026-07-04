@@ -79,4 +79,12 @@
       (cancel)="closeCreateModal()"
     ></app-create-task>
 
+    <app-modal-task
+      *ngIf="selectedTask() as task"
+      [task]="task"
+      (close)="closeDetails()"
+      (save)="handleTaskUpdated($event)"
+      (delete)="handleTaskDeleted($event)"
+    ></app-modal-task>
+
 </div>

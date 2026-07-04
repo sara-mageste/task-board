@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
 import { Task } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
 import { CreateTask, NewTaskPayload } from '../create-task/create-task';
+import { ModalTask, TaskUpdatePayload } from '../modal-task/modal-task';
 
 type Status = Task['status'];
 
@@ -21,7 +22,7 @@ interface ColumnConfig {
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, CreateTask],
+  imports: [CommonModule, FormsModule, CreateTask, ModalTask],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css',
 })
@@ -29,6 +30,7 @@ export class TaskList implements OnInit, OnDestroy {
 
   tasks = signal<Task[]>([]);
   isCreateModalOpen = signal(false);
+  selectedTask = signal<Task | null>(null);
 
   columns: ColumnConfig[] = [
     { status: 'BACKLOG',     title: 'Backlog',     colorClass: 'col-backlog' },
@@ -95,6 +97,7 @@ export class TaskList implements OnInit, OnDestroy {
     return this.tasks().filter(t => t.status === status);
   }
 
+  // Navigation tasks
   canGoBack(status: Status): boolean {
     return STATUS_ORDER.indexOf(status) > 0;
   }
@@ -121,10 +124,41 @@ export class TaskList implements OnInit, OnDestroy {
     });
   }
 
+  // Details / edit / delete
   openDetails(task: Task): void {
-    console.log('abrir detalhes', task.id);
+    this.selectedTask.set(task);
   }
 
+  closeDetails(): void {
+    this.selectedTask.set(null);
+  }
+
+  handleTaskUpdated(payload: TaskUpdatePayload): void {
+    const current = this.selectedTask();
+    if (!current?.id) return;
+ 
+    const updatedTask: Task = { ...current, ...payload };
+ 
+    this.taskService.update(current.id, updatedTask).subscribe({
+      next: (updated) => {
+        this.tasks.update(list => list.map(t => t.id === updated.id ? updated : t));
+        this.selectedTask.set(updated);
+      },
+      error: (err) => console.error('Error updating task:', err)
+    });
+  }
+ 
+  handleTaskDeleted(id: number): void {
+    this.taskService.delete(id).subscribe({
+      next: () => {
+        this.tasks.update(list => list.filter(t => t.id !== id));
+        this.closeDetails();
+      },
+      error: (err) => console.error('Error deleting task:', err)
+    });
+  }
+
+  // Create
   openCreateModal(): void {
      this.isCreateModalOpen.set(true);
   }
