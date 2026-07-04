@@ -73,4 +73,10 @@
 
     </section>
 
+    <app-create-task
+      *ngIf="isCreateModalOpen()"
+      (save)="handleTaskCreated($event)"
+      (cancel)="closeCreateModal()"
+    ></app-create-task>
+
 </div>

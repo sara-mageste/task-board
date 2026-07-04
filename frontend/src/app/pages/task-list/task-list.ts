@@ -6,6 +6,7 @@ import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/
 
 import { Task } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
+import { CreateTask, NewTaskPayload } from '../create-task/create-task';
 
 type Status = Task['status'];
 
@@ -20,13 +21,14 @@ interface ColumnConfig {
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CreateTask],
   templateUrl: './task-list.html',
   styleUrl: './task-list.css',
 })
 export class TaskList implements OnInit, OnDestroy {
 
   tasks = signal<Task[]>([]);
+  isCreateModalOpen = signal(false);
 
   columns: ColumnConfig[] = [
     { status: 'BACKLOG',     title: 'Backlog',     colorClass: 'col-backlog' },
@@ -115,7 +117,7 @@ export class TaskList implements OnInit, OnDestroy {
       next: (updated) => {
         this.tasks.update(list => list.map(t => t.id === updated.id ? updated : t));
       },
-      error: (err) => console.error('Erro ao mover tarefa:', err)
+      error: (err) => console.error('Error moving task:', err)
     });
   }
 
@@ -124,6 +126,20 @@ export class TaskList implements OnInit, OnDestroy {
   }
 
   openCreateModal(): void {
-    console.log('abrir modal de criação');
+     this.isCreateModalOpen.set(true);
+  }
+
+  closeCreateModal(): void {
+    this.isCreateModalOpen.set(false);
+  }
+
+  handleTaskCreated(payload: NewTaskPayload): void {
+    this.taskService.create(payload).subscribe({
+      next: (created) => {
+        this.tasks.update(list => [...list, created]);
+        this.closeCreateModal();
+      },
+      error: (err) => console.error('Error creating task:', err)
+    });
   }
 }

@@ -1,0 +1,93 @@
+<div class="overlay" (click)="onOverlayClick($event)">
+
+    <div class="modal-card" [formGroup]="form" (click)="closeDropdowns()">
+
+        <h2 class="modal-title">New Task</h2>
+
+        <!-- RESPONSÁVEL -->
+        <label class="field-label">Responsible *</label>
+        <input
+          type="text"
+          formControlName="assignee"
+          maxlength="25"
+          [class.invalid]="hasError('assignee')"
+        />
+        <span class="error-msg" *ngIf="hasError('assignee')">Required field</span>
+
+        <!-- TÍTULO -->
+        <label class="field-label">Title *</label>
+        <input
+          type="text"
+          formControlName="title"
+          maxlength="30"
+          [class.invalid]="hasError('title')"
+        />
+        <span class="error-msg" *ngIf="hasError('title')">Required field</span>
+
+        <!-- DESCRIÇÃO -->
+        <label class="field-label">Description *</label>
+        <textarea
+          formControlName="description"
+          maxlength="100"
+          rows="3"
+          [class.invalid]="hasError('description')"
+        ></textarea>
+        <span class="error-msg" *ngIf="hasError('description')">Required field</span>
+
+        <!-- PRIORIDADE + STATUS -->
+        <div class="field-row">
+
+            <div class="field-col">
+                <label class="field-label">Priority *</label>
+
+                <div class="custom-select">
+
+                    <div
+                      class="selected"
+                      [class.invalid]="hasError('priority')"
+                      (click)="togglePriorityDropdown($event)"
+                    >
+                        <span class="selected-text">{{ form.get('priority')?.value || '' }}</span>
+                    </div>
+
+                    <div class="dropdown" *ngIf="isPriorityOpen()" (click)="$event.stopPropagation()">
+                        <div *ngFor="let p of priorities" (click)="selectPriority(p)">{{ p }}</div>
+                    </div>
+
+                </div>
+
+                <span class="error-msg" *ngIf="hasError('priority')">Required field</span>
+            </div>
+
+            <div class="field-col">
+                <label class="field-label">Status *</label>
+
+                <div class="custom-select">
+
+                    <div
+                      class="selected"
+                      [class.invalid]="hasError('status')"
+                      (click)="toggleStatusDropdown($event)"
+                    >
+                        <span class="selected-text">{{ (form.get('status')?.value)?.replace('_', ' ') || '' }}</span>
+                    </div>
+
+                    <div class="dropdown" *ngIf="isStatusOpen()" (click)="$event.stopPropagation()">
+                        <div *ngFor="let s of statuses" (click)="selectStatus(s)">{{ s.replace('_', ' ') }}</div>
+                    </div>
+
+                </div>
+
+                <span class="error-msg" *ngIf="hasError('status')">Required field</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="modal-actions">
+        <button class="btn btn-cancel" (click)="onCancel()">Cancel</button>
+        <button class="btn btn-save" (click)="onSave()">Save</button>
+    </div>
+
+</div>
